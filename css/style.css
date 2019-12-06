@@ -36,6 +36,7 @@
     outline: none;
     float: right;
     margin: 25px;
+    cursor: pointer;
 }
 
 .posts-news-wrap-img {
@@ -70,4 +71,5 @@
     height: 50px;
     font-size: 16px;
     outline: none;
+    cursor: pointer;
 }
