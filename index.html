@@ -14,8 +14,14 @@
 <body>
     <div class="container">
         <header class="header-wrap">
-            <button class="cart-button" data-id="${GoodsItem[i].id}">Корзина</button>
-            <div class="cart-block invisible"></div>
+            <div class="container1">
+                <form class="search-form">
+                    <input type="text" class="search-input" />
+                    <button class="search-button">Поиск</button>
+                </form>
+                <button class="cart-button" data-id="${GoodsItem[i].id}">Корзина</button>
+                <div class="cart-block invisible"></div>
+            </div>
         </header>
         <main class="wrap-goods">
             <div class="goods-list"></div>
