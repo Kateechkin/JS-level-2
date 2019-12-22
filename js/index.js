@@ -1,15 +1,46 @@
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
+function makeGETRequest(url) {
+    return new Promise((resolve, reject) => {
+        let xhr;
+        if (window.XMLHttpRequest) {
+            xhr = new window.XMLHttpRequest();
+        } else {
+            xhr = new window.ActiveXObject('Microsoft.XMLHTTP');
+        }
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    const body = JSON.parse(xhr.responseText);
+                    resolve(body)
+                } else {
+                    reject(xhr.responseText);
+                }
+            }
+        };
+        xhr.onerror = function(err) {
+            reject(err);
+        };
+
+        xhr.open('GET', url);
+        xhr.send();
+    });
+}
+
 class GoodsItem {
-    constructor(id = '1', img = 'img/product.png', title = 'Подушка', price = '100') {
-        this.id = id;
-        this.img = img;
-        this.title = title;
+    constructor(id_product = '1', product_name = 'Подушка', price = '100') {
+        // this.img = img;
+        this.id_product = id_product;
+        this.product_name = product_name;
         this.price = price;
     }
     render() {
         return `<div class="goods-item">
-        <img src="${this.img}" alt="photo-post1" class="posts-news-wrap-img" width="300" height="180">
+        <img src="img/product.png" alt="photo-post1" class="posts-news-wrap-img" width="300" height="180">
         <div class="posts-news-info">
-            <h3 class="posts-news-info-title">${this.title}</h3>
+        <p class="posts-news-info-paragraf">${this.id_product}</p> 
+           <h3 class="posts-news-info-title">${this.product_name}</h3>
             <p class="posts-news-info-paragraf">${this.price}$ </p>      
             <button class="read-buttom">Купить</button>
         </div>
@@ -18,17 +49,45 @@ class GoodsItem {
 }
 // Хранилице товара
 class GoodsList {
+
     constructor() {
         this.goods = [];
+        this.filteredGoods = [];
+        this.initEvents();
     }
+
     fetchGoods() {
-        this.goods = [
-            { id: 1, img: 'img/chair.jpg', title: 'Стул', price: 170 },
-            { id: 2, img: 'img/lamp.jpg', title: 'Светильник', price: 200 },
-            { id: 3, img: 'img/toy.jpg', title: 'Игрушка', price: 100 },
-            { id: 4, img: 'img/flo.jpg', title: 'Цветок', price: 150 },
-        ];
+        return makeGETRequest(`${API_URL}/catalogData.json`)
+            .then((goods) => {
+                this.goods = goods;
+                this.filteredGoods = goods;
+            })
+            .catch(e => e);
     }
+
+    filterGoods(value) {
+        const regexp = new RegExp(value, 'i');
+        this.filteredGoods = this.goods.filter((good) => regexp.test(good.product_name));
+        this.render();
+    }
+
+    initEvents() {
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const value = searchInput.value;
+                this.filterGoods(value);
+            })
+        }
+        // fetchGoods() {
+        //     this.goods = [
+        //         { id: 1, img: 'img/chair.jpg', title: 'Стул', price: 170 },
+        //         { id: 2, img: 'img/lamp.jpg', title: 'Светильник', price: 200 },
+        //         { id: 3, img: 'img/toy.jpg', title: 'Игрушка', price: 100 },
+        //         { id: 4, img: 'img/flo.jpg', title: 'Цветок', price: 150 },
+        //     ];
+        // }
     totalPrice() {
         return this.goods.reduce((accum, item) => {
             if (item.price) accum += item.price;
@@ -37,8 +96,8 @@ class GoodsList {
     }
     render() {
         let listHtml = '';
-        this.goods.forEach(good => {
-            const goodItem = new GoodsItem(good.id, good.img, good.title, good.price);
+        this.filteredGoods.forEach(good => {
+            const goodItem = new GoodsItem(good.id_product, good.product_name, good.price);
             listHtml += goodItem.render();
         });
         document.querySelector('.goods-list').innerHTML = listHtml;
@@ -46,91 +105,28 @@ class GoodsList {
 }
 
 class Cart extends GoodsList {
-    constructor(goods) {
-        super(goods)
+    constructor(props) {
+        super(props);
     }
     clean() {}
-
-    incGood(index) {
-        let find = this.goods.find(el => el.id === index)
-        let prod = this.goods[index]
-
-        if (!find) {
-            GoodsItem.push({
-                id: index,
-                img: prod.img,
-                title: prod.title,
-                price: prod.price,
-                quantity: 1
-            })
-        } else {
-            find.quantity++
-        }
-        // console.log('Вы добавили в корзину: ' + goods[index].title)
-    }
-    decGood(index) {
-        let prod = this.goods[index]
-        let find = this.goods.find(el => el.id === index)
-
-        if (find.quantity > 1) {
-            find.quantity--
-        } else {
-            GoodsList.splice(GoodsList.indexOf(find), 1)
-        }
-    }
-
-    render(index) {
-        let htmlString = '';
-        this.goods.forEach(good => {
-            const Cart = new CartItem;
-            htmlString += Cart.render();
-        });
-        document.querySelector('.cart-block').innerHTML = htmlString
-    }
+    incGood() {}
+    decGood() {}
 }
+
 class CartItem extends GoodsItem {
-    constructor(id, img, title, price) {
-        super(id, img, title, price) //вызов конструктора родителя
+    constructor(props) {
+        super(props);
     }
     delete() {}
-    render() {
-        return `    
-        <div class="cart-item">
-        <div class="product-bio">
-                <img src="${this.img}" alt="" style=" width: 150px; height : 80px ">
-                <div class="product-desc">
-                <p class="product-title">${this.title}</p>
-                <p class="product-quantity">Тут должен быть счётчик</p> 
-                <p class="product-single-price">${this.price}</p>
-                 </div>
-             <div class="right-block">
-                <button class="del-btn""></button>
-             </div>
-        </div>
-        </div>
-    `
-    }
 }
-
-const list = new GoodsList();
-list.fetchGoods();
-list.render();
-const cart = new Cart();
-cart.render();
 
 let btnCart = document.querySelector('.cart-button')
 btnCart.addEventListener('click', function() {
     document.querySelector('.cart-block').classList.toggle('invisible') //смена класса(toggle)
 })
 
-document.querySelector('.container').addEventListener('click', function(e) {
-    if (e.target.classList.contains('read-buttom')) {
-        cart.incGood(+e.target.dataset['id'])
-    }
+const list = new GoodsList();
 
-    if (e.target.classList.contains('del-btn')) {
-        cart.decGood(+e.target.dataset['id'])
-    }
-})
-
-// console.log(list.totalPrice())
+list.fetchGoods().then(() => {
+    list.render();
+}).catch(e => console.error(e));
