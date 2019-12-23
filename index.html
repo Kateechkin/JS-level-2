@@ -12,21 +12,29 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="app">
         <header class="header-wrap">
             <div class="container1">
-                <form class="search-form">
-                    <input type="text" class="search-input" />
-                    <button class="search-button">Поиск</button>
+                <form class="search-form" @click="initEvents">
+                    <input type="text" class="search-input" v-model="searchLine">
+                    <button class="search-button" v-on:click="filterGoods">Поиск</button>
                 </form>
-                <button class="cart-button" data-id="${GoodsItem[i].id}">Корзина</button>
+                <button class="cart-button">Корзина</button>
                 <div class="cart-block invisible"></div>
             </div>
         </header>
         <main class="wrap-goods">
-            <div class="goods-list"></div>
+            <div class="goods-list" v-for="good in filteredGoods" :key="good.id_product">
+                <img src="img/product.png" alt="photo-post1" class="posts-news-wrap-img" width="300" height="180">
+                <div class="posts-news-info">
+                    <h3 class="posts-news-info-title">{{ good.product_name }}</h3>
+                    <p class="posts-news-info-paragraf">{{ good.price }} </p>
+                    <button class="read-buttom">Купить</button>
+                </div>
+            </div>
         </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="js/index.js"></script>
     <script src="js/main.js"></script>
 </body>
