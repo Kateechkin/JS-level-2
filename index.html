@@ -12,23 +12,32 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="app">
         <header class="header-wrap">
             <div class="container1">
                 <form class="search-form">
                     <input type="text" class="search-input" />
                     <button class="search-button">Поиск</button>
                 </form>
-                <button class="cart-button" data-id="${GoodsItem[i].id}">Корзина</button>
-                <div class="cart-block invisible"></div>
+                <button class="cart-button">Корзина</button>
+                <div class="cart-block invisible "></div>
             </div>
         </header>
-        <main class="wrap-goods">
-            <div class="goods-list"></div>
+        <main class="wrap-goods ">
+            <div class="goods-list" v-for="good in filteredGoods " :key="good.id_product ">
+                <div class="posts-news-info ">
+                    <img src="img/product.png " alt="photo-post1 " class="posts-news-wrap-img " width="300 " height="180 ">
+                    <p class="posts-news-info-paragraf ">{{good.id_product}}</p>
+                    <h3 class="posts-news-info-title ">{{ good.product_name }}</h3>
+                    <p class="posts-news-info-paragraf ">{{ good.price }} </p>
+                    <button class="read-buttom ">Купить</button>
+                </div>
+            </div>
         </main>
     </div>
-    <script src="js/index.js"></script>
-    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js "></script>
+    <script src="js/index.js "></script>
+    <script src="js/main.js "></script>
 </body>
 
 </html>
