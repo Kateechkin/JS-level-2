@@ -5,7 +5,7 @@ const app = new Vue({
     data: {
         goods: [],
         filteredGoods: [],
-        searchLine: ''
+        searchLine: 'Введите название товара'
     },
     methods: {
         makeGETRequest(url) {
@@ -34,6 +34,21 @@ const app = new Vue({
                 xhr.open('GET', url);
                 xhr.send();
             });
+        },
+
+        filterGoods(value) {
+            const regexp = new RegExp(value, 'i');
+            this.filteredGoods = this.goods.filter((good) => regexp.test(good.product_name));
+        },
+
+        initEvents() {
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const value = searchInput.value;
+                this.filterGoods(value);
+            })
         }
     },
     async mounted() {
@@ -45,6 +60,9 @@ const app = new Vue({
         }
     }
 });
+
+
+
 
 // const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
@@ -85,13 +103,13 @@ const app = new Vue({
 //     }
 //     render() {
 //         return `<div class="goods-item">
-//         <img src="img/product.png" alt="photo-post1" class="posts-news-wrap-img" width="300" height="180">
-//         <div class="posts-news-info">
-//         <p class="posts-news-info-paragraf">${this.id_product}</p> 
-//            <h3 class="posts-news-info-title">${this.product_name}</h3>
-//             <p class="posts-news-info-paragraf">${this.price}$ </p>      
-//             <button class="read-buttom">Купить</button>
-//         </div>
+// <img src="img/product.png" alt="photo-post1" class="posts-news-wrap-img" width="300" height="180">
+// <div class="posts-news-info">
+// <p class="posts-news-info-paragraf">${this.id_product}</p> 
+//    <h3 class="posts-news-info-title">${this.product_name}</h3>
+//     <p class="posts-news-info-paragraf">${this.price}$ </p>      
+//     <button class="read-buttom">Купить</button>
+// </div>
 //         </div>`
 //     }
 // }
@@ -113,21 +131,21 @@ const app = new Vue({
 //             .catch(e => e);
 //     }
 
-//     filterGoods(value) {
-//         const regexp = new RegExp(value, 'i');
-//         this.filteredGoods = this.goods.filter((good) => regexp.test(good.product_name));
-//         this.render();
-//     }
+// filterGoods(value) {
+//     const regexp = new RegExp(value, 'i');
+//     this.filteredGoods = this.goods.filter((good) => regexp.test(good.product_name));
+//     this.render();
+// }
 
-//     initEvents() {
-//             const searchForm = document.querySelector('.search-form');
-//             const searchInput = document.querySelector('.search-input');
-//             searchForm.addEventListener('submit', (e) => {
-//                 e.preventDefault();
-//                 const value = searchInput.value;
-//                 this.filterGoods(value);
-//             })
-//         }
+// initEvents() {
+//         const searchForm = document.querySelector('.search-form');
+//         const searchInput = document.querySelector('.search-input');
+//         searchForm.addEventListener('submit', (e) => {
+//             e.preventDefault();
+//             const value = searchInput.value;
+//             this.filterGoods(value);
+//         })
+//     }
 
 //     totalPrice() {
 //         return this.goods.reduce((accum, item) => {

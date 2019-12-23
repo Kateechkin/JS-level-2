@@ -15,8 +15,7 @@
 }
 
 .goods-list {
-    display: flex;
-    flex-direction: row;
+    margin: 50px;
 }
 
 .goods-item {
